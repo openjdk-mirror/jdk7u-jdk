@@ -1,12 +1,10 @@
 #
-# Copyright (c) 2012, Oracle and/or its affiliates. All rights reserved.
+# Copyright (c) 2011, Oracle and/or its affiliates. All rights reserved.
 # DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
 #
 # This code is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License version 2 only, as
-# published by the Free Software Foundation.  Oracle designates this
-# particular file as subject to the "Classpath" exception as provided
-# by Oracle in the LICENSE file that accompanied this code.
+# published by the Free Software Foundation.
 #
 # This code is distributed in the hope that it will be useful, but WITHOUT
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
@@ -23,32 +21,13 @@
 # questions.
 #
 
-BUILDDIR = ../..
-PRODUCT = oracle
-#SUBDIRS_MAKEFLAGS += JAVAC_MAX_WARNINGS=true
-#SUBDIRS_MAKEFLAGS += JAVAC_WARNINGS_FATAL=true
-#SUBDIRS_MAKEFLAGS += JAVAC_LINT_OPTIONS=-Xlint:all,-deprecation,-path
-include $(BUILDDIR)/common/Defs.gmk
+# @test
+# @bug 7104647
+# @run shell jcmd-Defaults.sh
+# @summary Test that output of 'jcmd' and 'jcmd -l' match a specific pattern
 
-# build com/oracle/security/ucrypto on Solaris platform for non-OpenJDK builds
-UCRYPTO =
-ifndef OPENJDK
-  ifeq ($(PLATFORM), solaris)
-    UCRYPTO = security/ucrypto
-  endif
-endif
+JCMD="${TESTJAVA}/bin/jcmd"
 
-JFR =
-ifndef OPENJDK
-ifndef JAVASE_EMBEDDED
-	JFR = jfr
-endif
-endif
+${JCMD} 2>&1 | awk -f ${TESTSRC}/jcmd_Output1.awk
 
-SUBDIRS = $(JFR) net nio util $(UCRYPTO)
-
-include $(BUILDDIR)/common/Subdirs.gmk
-
-all build clean clobber::
-	$(SUBDIRS-loop)
-
+${JCMD} -l 2>&1 | awk -f ${TESTSRC}/jcmd_Output1.awk

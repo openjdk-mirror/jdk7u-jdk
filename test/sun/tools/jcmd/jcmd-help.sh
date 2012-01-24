@@ -1,12 +1,10 @@
 #
-# Copyright (c) 2012, Oracle and/or its affiliates. All rights reserved.
+# Copyright (c) 2011, Oracle and/or its affiliates. All rights reserved.
 # DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
 #
 # This code is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License version 2 only, as
-# published by the Free Software Foundation.  Oracle designates this
-# particular file as subject to the "Classpath" exception as provided
-# by Oracle in the LICENSE file that accompanied this code.
+# published by the Free Software Foundation.
 #
 # This code is distributed in the hope that it will be useful, but WITHOUT
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
@@ -23,32 +21,34 @@
 # questions.
 #
 
-BUILDDIR = ../..
-PRODUCT = oracle
-#SUBDIRS_MAKEFLAGS += JAVAC_MAX_WARNINGS=true
-#SUBDIRS_MAKEFLAGS += JAVAC_WARNINGS_FATAL=true
-#SUBDIRS_MAKEFLAGS += JAVAC_LINT_OPTIONS=-Xlint:all,-deprecation,-path
-include $(BUILDDIR)/common/Defs.gmk
+# @test
+# @bug 7104647
+# @run shell jcmd-help.sh
+# @summary Test that output of 'jcmd -h' matches the usage.out file
 
-# build com/oracle/security/ucrypto on Solaris platform for non-OpenJDK builds
-UCRYPTO =
-ifndef OPENJDK
-  ifeq ($(PLATFORM), solaris)
-    UCRYPTO = security/ucrypto
-  endif
-endif
+JCMD="${TESTJAVA}/bin/jcmd"
 
-JFR =
-ifndef OPENJDK
-ifndef JAVASE_EMBEDDED
-	JFR = jfr
-endif
-endif
+rm -f jcmd.out 2>/dev/null
+${JCMD} -h > jcmd.out 2>&1
 
-SUBDIRS = $(JFR) net nio util $(UCRYPTO)
+diff -w jcmd.out ${TESTSRC}/usage.out
+if [ $? != 0 ]
+then
+  echo "Output of jcmd -h differ from expected output. Failed."
+  rm -f jcmd.out 2>/dev/null
+  exit 1
+fi
 
-include $(BUILDDIR)/common/Subdirs.gmk
+rm -f jcmd.out 2>/dev/null
+${JCMD} -help > jcmd.out 2>&1
 
-all build clean clobber::
-	$(SUBDIRS-loop)
+diff -w jcmd.out ${TESTSRC}/usage.out
+if [ $? != 0 ]
+then
+  echo "Output of jcmd -help differ from expected output. Failed."
+  rm -f jcmd.out 2>/dev/null
+  exit 1
+fi
 
+rm -f jcmd.out 2>/dev/null
+exit 0
