@@ -810,7 +810,7 @@ transformClassFile(             JPLISAgent *            agent,
             classFileBufferObject = (*jnienv)->NewByteArray(jnienv,
                                                             class_data_len);
             errorOutstanding = checkForAndClearThrowable(jnienv);
-            jplis_assert_msg(!errorOutstanding, "can't create byte arrau");
+            jplis_assert_msg(!errorOutstanding, "can't create byte array");
         }
 
         if ( !errorOutstanding ) {
