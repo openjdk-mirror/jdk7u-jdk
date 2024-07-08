@@ -84,7 +84,7 @@ int main(int argc, char** argv) {
        QUOTEMACRO(REQUIRED_FREETYPE_VERSION));
 
    printf("Detected freetype headers: %s\n", v);
-   if (strcmp(v, QUOTEMACRO(REQUIRED_FREETYPE_VERSION)) < 0) {
+   if (strverscmp(v, QUOTEMACRO(REQUIRED_FREETYPE_VERSION)) < 0) {
        printf("Failed: headers are too old.\n");
    }
 
@@ -93,7 +93,7 @@ int main(int argc, char** argv) {
    sprintf(v, "%d.%d.%d", major, minor, patch);
 
    printf("Detected freetype library: %s\n", v);
-   if (strcmp(v, QUOTEMACRO(REQUIRED_FREETYPE_VERSION)) < 0) {
+   if (strverscmp(v, QUOTEMACRO(REQUIRED_FREETYPE_VERSION)) < 0) {
       printf("Failed: too old library.\n");
    }
 
